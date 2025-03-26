@@ -11,17 +11,13 @@ SQL Server, LINQ, Dependency Injection
 Setup
 Clone the repo:
 
-sh
-Copy
-Edit
+
 git clone https://github.com/Dhruti211/Dynamic-TimeTable-Generator.git
 Update appsettings.json with your DB connection.
 
 Run the app:
 
-sh
-Copy
-Edit
+
 dotnet run
 Open http://localhost:5000 in your browser.
 
