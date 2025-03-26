@@ -1,0 +1,42 @@
+﻿@model TimetableViewModel
+
+<h2>Dynamic TimeTable</h2>
+<h3>Create Timetable</h3>
+<form asp-action="SetSubjectHours" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Input.WorkingDays">Number of Working Days</label>
+        <input asp-for="Input.WorkingDays" class="form-control" type="number" min="1" max="7" />
+        <span asp-validation-for="Input.WorkingDays" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Input.SubjectsPerDay">Subjects per Day</label>
+        <input asp-for="Input.SubjectsPerDay" class="form-control" type="number" min="1" max="8" />
+        <span asp-validation-for="Input.SubjectsPerDay" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Input.TotalSubjects">Total Subjects</label>
+        <input asp-for="Input.TotalSubjects" class="form-control" type="number" min="1" />
+        <span asp-validation-for="Input.TotalSubjects" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Total Hours: <span id="totalHours">@Model.Input.TotalHours</span></label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Next</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $('input').on('input', function() {
+            var days = parseInt($('#Input_WorkingDays').val()) || 0;
+            var subjects = parseInt($('#Input_SubjectsPerDay').val()) || 0;
+            $('#totalHours').text(days * subjects);
+        });
+    </script>
+}

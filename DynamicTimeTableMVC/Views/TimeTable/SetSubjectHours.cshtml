@@ -1,0 +1,84 @@
+﻿@model TimetableViewModel
+
+<h2>Dynamic TimeTable</h2>
+<h3>Set Subject Hours</h3>
+<form asp-action="Generate" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    <input type="hidden" asp-for="Input.WorkingDays" />
+    <input type="hidden" asp-for="Input.SubjectsPerDay" />
+    <input type="hidden" asp-for="Input.TotalSubjects" />
+
+    @for (int i = 0; i < Model.Input.TotalSubjects; i++)
+    {
+        <div class="form-group">
+            <label>Subject @(i + 1)</label>
+            <input type="text" asp-for="SubjectHours[i].SubjectName" class="subject-name form-control mb-2" placeholder="Subject Name" value="@Model.SubjectHours[i].SubjectName" />
+            <span asp-validation-for="SubjectHours[i].SubjectName" class="text-danger"></span>
+            <input type="number" asp-for="SubjectHours[i].Hours" class="form-control subject-hours" placeholder="Hours" min="1" value="@Model.SubjectHours[i].Hours" />
+            <span asp-validation-for="SubjectHours[i].Hours" class="text-danger"></span>
+        </div>
+    }
+
+    <p>Total hours must equal: <span id="requiredTotal">@Model.Input.TotalHours</span> (Current: <span id="currentTotal">0</span>)</p>
+    <button type="submit" class="btn btn-primary" id="generateBtn" disabled>Generate</button>
+</form>
+
+@section Scripts {
+    <script>
+        if (typeof jQuery === 'undefined') {
+            console.error('jQuery is not loaded. Please ensure jQuery is included in the layout.');
+        } else {
+            $(document).ready(function() {
+                function updateTotal() {
+                    let total = 0;
+                    let allFieldsValid = true;
+
+                    $('.form-group').each(function(index) {
+                        let subjectName = $(this).find('.subject-name').val();
+                        let hours = parseInt($(this).find('.subject-hours').val()) || 0;
+
+                        // Log values for debugging
+                        console.log(`Subject ${index + 1}: Name = "${subjectName}", Hours = ${hours}`);
+
+                        // Validate subject name
+                        if (!subjectName || subjectName.trim() === "") {
+                            console.log(`Subject ${index + 1}: Subject name is empty`);
+                            allFieldsValid = false;
+                        }
+
+                        // Validate hours
+                        if (hours <= 0 || isNaN(hours)) {
+                            console.log(`Subject ${index + 1}: Hours (${hours}) are invalid`);
+                            allFieldsValid = false;
+                        }
+
+                        total += hours;
+                    });
+
+                    // Update the current total display
+                    $('#currentTotal').text(total);
+
+                    // Log the final state
+                    console.log(`Total: ${total}, Required: @Model.Input.TotalHours, All Fields Valid: ${allFieldsValid}`);
+
+                    // Enable the Generate button if total matches and all fields are valid
+                    const requiredTotal = @Model.Input.TotalHours;
+                    const isButtonEnabled = total === requiredTotal && allFieldsValid;
+                    console.log(`Button Enabled: ${isButtonEnabled}`);
+                    $('#generateBtn').prop('disabled', !isButtonEnabled);
+                }
+
+                // Attach event listeners
+                $('.subject-name, .subject-hours').on('input change', updateTotal);
+
+                // Initial call on page load
+                updateTotal();
+            });
+        }
+    </script>
+}
