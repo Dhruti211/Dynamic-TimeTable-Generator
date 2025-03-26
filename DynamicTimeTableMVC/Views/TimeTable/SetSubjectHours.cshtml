@@ -42,18 +42,15 @@
                         let subjectName = $(this).find('.subject-name').val();
                         let hours = parseInt($(this).find('.subject-hours').val()) || 0;
 
-                        // Log values for debugging
-                        console.log(`Subject ${index + 1}: Name = "${subjectName}", Hours = ${hours}`);
-
+                   
                         // Validate subject name
                         if (!subjectName || subjectName.trim() === "") {
-                            console.log(`Subject ${index + 1}: Subject name is empty`);
+                           
                             allFieldsValid = false;
                         }
 
                         // Validate hours
                         if (hours <= 0 || isNaN(hours)) {
-                            console.log(`Subject ${index + 1}: Hours (${hours}) are invalid`);
                             allFieldsValid = false;
                         }
 
@@ -63,13 +60,11 @@
                     // Update the current total display
                     $('#currentTotal').text(total);
 
-                    // Log the final state
-                    console.log(`Total: ${total}, Required: @Model.Input.TotalHours, All Fields Valid: ${allFieldsValid}`);
-
+                   
                     // Enable the Generate button if total matches and all fields are valid
                     const requiredTotal = @Model.Input.TotalHours;
                     const isButtonEnabled = total === requiredTotal && allFieldsValid;
-                    console.log(`Button Enabled: ${isButtonEnabled}`);
+                   
                     $('#generateBtn').prop('disabled', !isButtonEnabled);
                 }
 
